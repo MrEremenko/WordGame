@@ -18,12 +18,13 @@ CREATE TABLE guess (
     round INT,
     word VARCHAR(50),
     gameId INT,
-    userId INT,
+    userId VARCHAR(20),
+    dateCreated TIMESTAMP NOT NULL,
     CONSTRAINT fk_gameId
 		FOREIGN KEY (gameId)
         REFERENCES games(id),
 	CONSTRAINT fk_userId
 		FOREIGN KEY (userId)
-        REFERENCES `user`(id)
+        REFERENCES users(id)
 );
 
