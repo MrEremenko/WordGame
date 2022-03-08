@@ -13,7 +13,7 @@ CREATE TABLE games (
     dateCreated TIMESTAMP NOT NULL
     );
     
-CREATE TABLE guess (
+CREATE TABLE guesses (
 	id INT AUTO_INCREMENT PRIMARY KEY,
     round INT,
     word VARCHAR(50),
