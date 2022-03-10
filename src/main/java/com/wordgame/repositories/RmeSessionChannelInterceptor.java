@@ -52,6 +52,7 @@ public class RmeSessionChannelInterceptor implements ChannelInterceptor {
     }
 
     private boolean verifyCaptcha(String token) {
+        boolean isVerified = false;
         Map<Object, Object> values = new HashMap<>();
         values.put("response", token);
         values.put("secret", secret);
@@ -67,7 +68,9 @@ public class RmeSessionChannelInterceptor implements ChannelInterceptor {
             System.out.println("Request: " + request.toString());
             HttpResponse<String> response = client.send(request,
                     HttpResponse.BodyHandlers.ofString());
+
             System.out.println(response.body());
+
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
