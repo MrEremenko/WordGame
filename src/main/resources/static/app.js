@@ -4,16 +4,29 @@ var captchaSolved = false;
 var captchaToken = '';
 
 
-//In order from top to bottom of HTML File
+//This function creates the area where you'll see all the players
+function createPlayArea() {
+    var name = document.createElement("div");
+    name.classList.add("col");
+    name.innerText = "Me";
+    $("#playerNames").append(name);
 
-
-
-function updateChosenPlayerAmount() {
-
+    for(var i = 0; i < playerAmount - 1; i++) {
+        var colForSpinner = document.createElement("div");
+        colForSpinner.classList.add("col");
+        var another = document.createElement("div");
+        another.classList.add("spinner-border");
+        another.setAttribute("role", "status");
+        var inside = document.createElement("span");
+        inside.classList.add("visually-hidden");
+        inside.innerText = "Loading...";
+        another.appendChild(inside);
+        colForSpinner.appendChild(another);
+        $("#playerNames").append(colForSpinner);
+    }
 }
 
-
-
+//In order from top to bottom of HTML File
 function setConnected(connected) {
     $("#connect").prop("disabled", connected);
     $("#disconnect").prop("disabled", !connected);
@@ -71,10 +84,12 @@ $(function () {
     //Once the Go button is clicked
     $("#go-button").click((e) => {
         connect()
+        createPlayArea();
     });
 
     //Listen to the change of the hCaptcha, and update when it is changed
     var foo = document.getElementById("captcha").firstChild;
+    console.log(foo);
     var observer = new MutationObserver(function(mutations) {
       captchaReponse = document.getElementById("captcha").firstChild.getAttribute("data-hcaptcha-response");
       if(captchaReponse.trim().length > 0) {
