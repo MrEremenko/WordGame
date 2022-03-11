@@ -40,7 +40,6 @@ public class RmeSessionChannelInterceptor implements ChannelInterceptor {
         if(StompCommand.CONNECT.equals(accessor.getCommand())) {
             for (Map.Entry<String, List<String>> head : multiValueMap.entrySet()) {
                 if(head.getKey().equals("token")) {
-                    //System.out.println("Token: " + head.getValue());
                     token = head.getValue().toString();
                     break;
                 }
