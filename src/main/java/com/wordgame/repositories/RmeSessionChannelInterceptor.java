@@ -1,6 +1,6 @@
 package com.wordgame.repositories;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
@@ -8,6 +8,7 @@ import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.simp.stomp.StompCommand;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
+import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.util.MultiValueMap;
 
 import java.io.IOException;
@@ -28,12 +29,11 @@ public class RmeSessionChannelInterceptor implements ChannelInterceptor {
 
     @Override
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
-        System.out.println("Channel Interceptor");
         String token = null;
         MessageHeaders headers = message.getHeaders();
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
 
-        System.out.println("Command:" + accessor.getCommand());
+        System.out.println("[Channcel Interceptor] Command: " + accessor.getCommand());
 
         MultiValueMap<String, String> multiValueMap = headers.get(StompHeaderAccessor.NATIVE_HEADERS,MultiValueMap.class);
 
@@ -44,7 +44,13 @@ public class RmeSessionChannelInterceptor implements ChannelInterceptor {
                     break;
                 }
             }
-            verifyCaptcha(token);
+
+            if(!verifyCaptcha(token)) {
+                accessor = StompHeaderAccessor.create(StompCommand.ERROR);
+                accessor.setMessage("Error when connecting.");
+                message = MessageBuilder.createMessage(new byte[0], accessor.getMessageHeaders());
+                channel.send(null);
+            }
         }
 
         return message;
@@ -53,7 +59,7 @@ public class RmeSessionChannelInterceptor implements ChannelInterceptor {
     private boolean verifyCaptcha(String token) {
         boolean isVerified = false;
         Map<Object, Object> values = new HashMap<>();
-        values.put("response", token.replaceAll("[\\[\\]]", ""));
+        values.put("response", "test yo");//token.replaceAll("[\\[\\]]", ""));
         values.put("secret", secret);
 
         try {
@@ -68,13 +74,16 @@ public class RmeSessionChannelInterceptor implements ChannelInterceptor {
             HttpResponse<String> response = client.send(request,
                     HttpResponse.BodyHandlers.ofString());
 
-            System.out.println(response.body());
+            JSONObject jsonObject = new JSONObject(response.body());
+            isVerified = Boolean.parseBoolean(jsonObject.get("success").toString());
+
+
 
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
 
-        return true;
+        return isVerified;
     }
 
     private HttpRequest.BodyPublisher encodeData(Map<Object, Object> data) {
