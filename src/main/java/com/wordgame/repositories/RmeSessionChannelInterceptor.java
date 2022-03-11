@@ -53,7 +53,7 @@ public class RmeSessionChannelInterceptor implements ChannelInterceptor {
     private boolean verifyCaptcha(String token) {
         boolean isVerified = false;
         Map<Object, Object> values = new HashMap<>();
-        values.put("response", token);
+        values.put("response", token.replaceAll("[\\[\\]]", ""));
         values.put("secret", secret);
 
         try {

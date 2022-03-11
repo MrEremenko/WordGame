@@ -94,6 +94,7 @@ $(function () {
       captchaReponse = document.getElementById("captcha").firstChild.getAttribute("data-hcaptcha-response");
       if(captchaReponse.trim().length > 0) {
         console.log("new captcha: " + captchaReponse);
+        captchaToken = captchaReponse;
         captchaSolved = true;
         $('#go-button').prop("disabled", false);
       }
