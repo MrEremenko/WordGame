@@ -1,6 +1,5 @@
 package com.wordgame;
 
-import com.wordgame.repositories.RmeSessionChannelInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.ChannelRegistration;
@@ -33,5 +32,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public RmeSessionChannelInterceptor rmeSessionChannelInterceptor() {
         return new RmeSessionChannelInterceptor();
     }
+
 
 }
