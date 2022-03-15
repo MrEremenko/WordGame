@@ -40,7 +40,7 @@ function setConnected(connected) {
 }
 
 function connect() {
-    var socket = new SockJS('/gs-guide-websocket');
+    var socket = new SockJS('/connect');
     stompClient = Stomp.over(socket);
     stompClient.connect({
         token: captchaToken
