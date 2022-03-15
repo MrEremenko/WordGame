@@ -1,6 +1,9 @@
-package com.wordgame.repositories;
+package com.wordgame;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.json.JSONObject;
+import org.springframework.beans.InvalidPropertyException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
@@ -8,6 +11,7 @@ import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.simp.stomp.StompCommand;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
+import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.util.MultiValueMap;
 
 import java.io.IOException;
@@ -17,9 +21,12 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
+import java.security.InvalidKeyException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.MissingResourceException;
+import java.util.concurrent.ExecutionException;
 
 public class RmeSessionChannelInterceptor implements ChannelInterceptor {
 
@@ -28,32 +35,37 @@ public class RmeSessionChannelInterceptor implements ChannelInterceptor {
 
     @Override
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
-        System.out.println("Channel Interceptor");
-        String token = null;
         MessageHeaders headers = message.getHeaders();
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
 
-        System.out.println("Command:" + accessor.getCommand());
+        System.out.println("[Channel Interceptor] Command: " + accessor.getCommand());
 
         MultiValueMap<String, String> multiValueMap = headers.get(StompHeaderAccessor.NATIVE_HEADERS,MultiValueMap.class);
 
         if(StompCommand.CONNECT.equals(accessor.getCommand())) {
-            for (Map.Entry<String, List<String>> head : multiValueMap.entrySet()) {
-                if(head.getKey().equals("token")) {
-                    token = head.getValue().toString();
-                    break;
-                }
-            }
-            verifyCaptcha(token);
+            message = verifyCaptcha(getToken(multiValueMap)) ? message : null;
         }
 
         return message;
     }
 
+    private String getToken(MultiValueMap<String, String> multiValueMap) {
+        String token = null;
+        for (Map.Entry<String, List<String>> head : multiValueMap.entrySet()) {
+            if(head.getKey().equals("token")) {
+                token = head.getValue().toString();
+                token = token.replace("[", "").replace("]", "");
+                break;
+            }
+        }
+
+        return token;
+    }
+
     private boolean verifyCaptcha(String token) {
         boolean isVerified = false;
         Map<Object, Object> values = new HashMap<>();
-        values.put("response", token.replaceAll("[\\[\\]]", ""));
+        values.put("response", token);
         values.put("secret", secret);
 
         try {
@@ -68,13 +80,13 @@ public class RmeSessionChannelInterceptor implements ChannelInterceptor {
             HttpResponse<String> response = client.send(request,
                     HttpResponse.BodyHandlers.ofString());
 
-            System.out.println(response.body());
-
+            JSONObject jsonObject = new JSONObject(response.body());
+            isVerified = Boolean.parseBoolean(jsonObject.get("success").toString());
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
 
-        return true;
+        return isVerified;
     }
 
     private HttpRequest.BodyPublisher encodeData(Map<Object, Object> data) {
