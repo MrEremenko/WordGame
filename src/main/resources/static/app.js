@@ -38,6 +38,7 @@ function removePlayArea() {
 function updateView() {
     if(choosingRoom) {
         //update buttons
+        $("#player-amount").removeClass("disabled");
         $("#2-players-button").prop("disabled", false);
         $("#3-players-button").prop("disabled", false);
         $("#4-players-button").prop("disabled", false);
@@ -49,19 +50,21 @@ function updateView() {
 
         //update player area
         removePlayArea();
+
+        //update waiting label
+        $("#countdown").text("");
+
     } else {
         //if its still there, remove it
         if($("#captcha")) {
-            console.log($("#captcha"));
             $("#captcha").remove();
-            console.log($("#captcha"));
         }
 
-        console.log("In here")
         //update buttons
-        $("#2-players-button").prop("disabled", true);
-        $("#3-players-button").prop("disabled", true);
-        $("#4-players-button").prop("disabled", true);
+        $("#player-amount").addClass("disabled");
+        $("#2-players-button").prop("disabled", "disabled");
+        $("#3-players-button").prop("disabled", "disabled");
+        $("#4-players-button").prop("disabled", "disabled");
 
         //update go button
         $("#go-button").removeClass("btn-success");
@@ -70,6 +73,9 @@ function updateView() {
 
         //update player area
         createPlayArea();
+
+        //update waiting label
+        $("#countdown").text("Waiting for players");
     }
 }
 
@@ -121,11 +127,13 @@ $(function () {
 
     //On player amount switch
     $("#player-amount").click((e) => {
-        playerAmount = +e.target.getAttribute("value");
-        $('#2-players-button').prop("checked", false);
-        $('#3-players-button').prop("checked", false);
-        $('#4-players-button').prop("checked", false);
-        $("#" + playerAmount + '-players-button').prop("checked", true);
+        if(choosingRoom) {
+            playerAmount = +e.target.getAttribute("value");
+            $('#2-players-button').prop("checked", false);
+            $('#3-players-button').prop("checked", false);
+            $('#4-players-button').prop("checked", false);
+            $("#" + playerAmount + '-players-button').prop("checked", true);
+        }
     });
 
     //Once the Go button is clicked
