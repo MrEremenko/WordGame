@@ -2,6 +2,7 @@ var stompClient = null;
 var playerAmount = 2;
 var captchaSolved = false;
 var captchaToken = '';
+var choosingRoom = true;
 
 
 //This function creates the area where you'll see all the players
@@ -14,7 +15,11 @@ function createPlayArea() {
     for(var i = 0; i < playerAmount - 1; i++) {
         var colForSpinner = document.createElement("div");
         colForSpinner.classList.add("col");
+        colForSpinner.classList.add("d-flex");
+        colForSpinner.classList.add("flex-column");
+        colForSpinner.classList.add("align-items-center");
         var another = document.createElement("div");
+        another.id = "player" + (i + 1);
         another.classList.add("spinner-border");
         another.setAttribute("role", "status");
         var inside = document.createElement("span");
@@ -23,6 +28,48 @@ function createPlayArea() {
         another.appendChild(inside);
         colForSpinner.appendChild(another);
         $("#playerNames").append(colForSpinner);
+    }
+}
+
+function removePlayArea() {
+    $("#playerNames").children().remove();
+}
+
+function updateView() {
+    if(choosingRoom) {
+        //update buttons
+        $("#2-players-button").prop("disabled", false);
+        $("#3-players-button").prop("disabled", false);
+        $("#4-players-button").prop("disabled", false);
+
+        //update go button
+        $("#go-button").removeClass("btn-danger");
+        $("#go-button").addClass("btn-success");
+        $("#go-button").text("Go");
+
+        //update player area
+        removePlayArea();
+    } else {
+        //if its still there, remove it
+        if($("#captcha")) {
+            console.log($("#captcha"));
+            $("#captcha").remove();
+            console.log($("#captcha"));
+        }
+
+        console.log("In here")
+        //update buttons
+        $("#2-players-button").prop("disabled", true);
+        $("#3-players-button").prop("disabled", true);
+        $("#4-players-button").prop("disabled", true);
+
+        //update go button
+        $("#go-button").removeClass("btn-success");
+        $("#go-button").addClass("btn-danger");
+        $("#go-button").text("Leave");
+
+        //update player area
+        createPlayArea();
     }
 }
 
@@ -83,8 +130,11 @@ $(function () {
 
     //Once the Go button is clicked
     $("#go-button").click((e) => {
-        connect()
-        createPlayArea();
+        choosingRoom = !choosingRoom;
+        updateView();
+        if(!stompClient) {
+            connect()
+        }
     });
 
     //Listen to the change of the hCaptcha, and update when it is changed
@@ -104,7 +154,6 @@ $(function () {
       attributes: true,
       attributeFilter: ['data-hcaptcha-response']
     });
-
 
     $("form").on('submit', function (e) {
         e.preventDefault();
