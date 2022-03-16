@@ -50,6 +50,9 @@ function connect() {
         stompClient.subscribe('/topic/greetings', function (greeting) {
             showGreeting(JSON.parse(greeting.body).content);
         });
+//        stompClient.subscribe('/game/guess', function (guess) {
+//            showGreeting(JSON.parse(guess.body).content);
+//        });
     });
 }
 
@@ -67,6 +70,17 @@ function sendName() {
 
 function showGreeting(message) {
     $("#greetings").append("<tr><td>" + message + "</td></tr>");
+}
+
+function sendGuess() {
+    console.log("guess submitted");
+    console.log(JSON.stringify({'userId': $("#userId").val(), 'guess': $("#userGuess").val()}));
+    stompClient.send("/app/guess", {},
+     JSON.stringify({'userId': $("#userId").val(), 'guess': $("#userGuess").val()}))
+}
+
+function showGuess(message) {
+    $("#sendGuess").append("<tr><td>" + message + "</td></tr>");
 }
 
 //Main thing to add all the event listeners
@@ -113,4 +127,6 @@ $(function () {
     $( "#connect" ).click(function() { connect(); });
     $( "#disconnect" ).click(function() { disconnect(); });
     $( "#send" ).click(function() { sendName(); });
+    $( "#submitGuess" ).click(function() { sendGuess(); });
+    $( "#submitGuess" ).click(function() { showGuess(); });
 });
