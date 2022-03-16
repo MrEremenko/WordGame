@@ -2,6 +2,7 @@ var stompClient = null;
 var playerAmount = 2;
 var captchaSolved = false;
 var captchaToken = '';
+var roomId;
 
 
 //This function creates the area where you'll see all the players
@@ -46,11 +47,17 @@ function connect() {
         token: captchaToken
     }, function (frame) {
         setConnected(true);
-        console.log('Connected: ' + frame);
+        console.log('Connected: ' + JSON.stringify(frame, null, 2));
+
         stompClient.subscribe('/topic/greetings', function (greeting) {
             showGreeting(JSON.parse(greeting.body).content);
         });
+        stompClient.subscribe('/topic/newRoom', function (room) {
+            this.roomId = room.roomId;
+            console.log("Room Id: " + room);
+        });
     });
+
 }
 
 function disconnect() {
@@ -85,6 +92,7 @@ $(function () {
     $("#go-button").click((e) => {
         connect()
         createPlayArea();
+
     });
 
     //Listen to the change of the hCaptcha, and update when it is changed
@@ -112,5 +120,7 @@ $(function () {
 
     $( "#connect" ).click(function() { connect(); });
     $( "#disconnect" ).click(function() { disconnect(); });
-    $( "#send" ).click(function() { sendName(); });
+    $( "#send" ).click(function() { sendName();
+        stompClient.send("/app/createRoom", {}, "Test");
+        });
 });

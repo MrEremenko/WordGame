@@ -20,7 +20,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/connect").withSockJS();
+        registry.addEndpoint("/connect").addInterceptors(handShakeHandler()).withSockJS();
     }
 
     @Override
@@ -29,9 +29,11 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     }
 
     @Bean
+    public HandShakeHandler handShakeHandler() { return new HandShakeHandler(); }
+
+    @Bean
     public RmeSessionChannelInterceptor rmeSessionChannelInterceptor() {
         return new RmeSessionChannelInterceptor();
     }
-
 
 }
