@@ -50,9 +50,10 @@ function connect() {
         stompClient.subscribe('/topic/greetings', function (greeting) {
             showGreeting(JSON.parse(greeting.body).content);
         });
-//        stompClient.subscribe('/game/guess', function (guess) {
-//            showGreeting(JSON.parse(guess.body).content);
-//        });
+        // This should be how a response is displayed in HTML
+        stompClient.subscribe('/player/guess', function (guess) {
+            showGuess(JSON.parse(guess.body).guess);
+        });
     });
 }
 
@@ -64,6 +65,13 @@ function disconnect() {
     console.log("Disconnected");
 }
 
+function sendGuess() {
+    console.log("guess submitted");
+    console.log(JSON.stringify({'userId': $("#userId").val(), 'guess': $("#userGuess").val()}));
+    stompClient.send("/app/game", {},
+     JSON.stringify({'userId': $("#userId").val(), 'guess': $("#userGuess").val()}))
+}
+
 function sendName() {
     stompClient.send("/app/hello", {}, JSON.stringify({'name': $("#name").val()}));
 }
@@ -72,15 +80,8 @@ function showGreeting(message) {
     $("#greetings").append("<tr><td>" + message + "</td></tr>");
 }
 
-function sendGuess() {
-    console.log("guess submitted");
-    console.log(JSON.stringify({'userId': $("#userId").val(), 'guess': $("#userGuess").val()}));
-    stompClient.send("/app/guess", {},
-     JSON.stringify({'userId': $("#userId").val(), 'guess': $("#userGuess").val()}))
-}
-
 function showGuess(message) {
-    $("#sendGuess").append("<tr><td>" + message + "</td></tr>");
+    $("#guess").append("<tr><td>" + message + "</td></tr>");
 }
 
 //Main thing to add all the event listeners
@@ -128,5 +129,4 @@ $(function () {
     $( "#disconnect" ).click(function() { disconnect(); });
     $( "#send" ).click(function() { sendName(); });
     $( "#submitGuess" ).click(function() { sendGuess(); });
-    $( "#submitGuess" ).click(function() { showGuess(); });
 });

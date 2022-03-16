@@ -12,10 +12,10 @@ import org.springframework.web.util.HtmlUtils;
 public class GameController {
     // receive words from up to 4 users
 
-    @MessageMapping("/guess")
-    @SendTo("/game/guess")
+    @MessageMapping("/game")
+    @SendTo("/player/guess")
     public PlayerGuess guess(PlayerGuess guess) throws Exception {
-        System.out.println("Hit /game/guess endpoint");
+        System.out.println("Hit /player/guess endpoint");
         System.out.println("user Id " + guess.getUserId());
         System.out.println("User Guess " + guess.getGuess());
         Thread.sleep(1000); // simulated delay
