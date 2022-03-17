@@ -2,7 +2,7 @@ var stompClient = null;
 var playerAmount = 2;
 var captchaSolved = false;
 var captchaToken = '';
-var roomId;
+var roomId = '';
 
 
 //This function creates the area where you'll see all the players
@@ -47,15 +47,10 @@ function connect() {
         token: captchaToken
     }, function (frame) {
         setConnected(true);
-        console.log('Connected: ' + JSON.stringify(frame, null, 2));
-
-        stompClient.subscribe('/topic/greetings', function (greeting) {
+        stompClient.subscribe('/room/greetings', function (greeting) {
             showGreeting(JSON.parse(greeting.body).content);
         });
-        stompClient.subscribe('/topic/newRoom', function (room) {
-            this.roomId = room.roomId;
-            console.log("Room Id: " + room);
-        });
+        stompClient.subscribe('/app/roomId', setRoom);
     });
 
 }
@@ -72,8 +67,20 @@ function sendName() {
     stompClient.send("/app/hello", {}, JSON.stringify({'name': $("#name").val()}));
 }
 
+function getRoom() {
+    stompClient.send("/app/connectRoom", {}, "Test");
+}
+
 function showGreeting(message) {
     $("#greetings").append("<tr><td>" + message + "</td></tr>");
+}
+
+var setRoom = function (room) {
+    roomId = JSON.parse(room.body).roomId;
+}
+
+function printRoom() {
+    console.log("RoomId: " + roomId);
 }
 
 //Main thing to add all the event listeners
@@ -120,7 +127,8 @@ $(function () {
 
     $( "#connect" ).click(function() { connect(); });
     $( "#disconnect" ).click(function() { disconnect(); });
-    $( "#send" ).click(function() { sendName();
-        stompClient.send("/app/createRoom", {}, "Test");
+    $( "#send" ).click(function() {
+                sendName();
+                printRoom();
         });
 });
