@@ -14,7 +14,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
-        config.enableSimpleBroker("/topic");
+        config.enableSimpleBroker("/room");
         config.setApplicationDestinationPrefixes("/app");
     }
 
@@ -29,9 +29,11 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     }
 
     @Bean
+    public HandShakeHandler handShakeHandler() { return new HandShakeHandler(); }
+
+    @Bean
     public RmeSessionChannelInterceptor rmeSessionChannelInterceptor() {
         return new RmeSessionChannelInterceptor();
     }
-
 
 }

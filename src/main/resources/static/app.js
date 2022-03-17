@@ -3,6 +3,7 @@ var playerAmount = 2;
 var captchaSolved = false;
 var captchaToken = '';
 var choosingRoom = true;
+var roomId = '';
 
 
 //This function creates the area where you'll see all the players
@@ -103,7 +104,9 @@ function connect() {
 //        stompClient.subscribe('/topic/greetings', function (greeting) {
 //            showGreeting(JSON.parse(greeting.body).content);
 //        });
+        stompClient.subscribe('/app/roomId', setRoom);
     });
+
 }
 
 function disconnect() {
@@ -114,12 +117,37 @@ function disconnect() {
     console.log("Disconnected");
 }
 
+function sendGuess() {
+    console.log("guess submitted");
+    console.log(JSON.stringify({'userId': $("#userId").val(), 'guess': $("#userGuess").val()}));
+    stompClient.send("/app/game/" + roomId, {},
+     JSON.stringify({'userId': $("#userId").val(), 'guess': $("#userGuess").val()}))
+}
+
 function sendName() {
     stompClient.send("/app/hello", {}, JSON.stringify({'name': $("#name").val()}));
 }
 
+function getRoom() {
+    stompClient.send("/app/connectRoom", {}, "Test");
+}
+
 function showGreeting(message) {
     $("#greetings").append("<tr><td>" + message + "</td></tr>");
+}
+
+function printRoom() {
+    console.log("RoomId: " + roomId);
+}
+
+var showGuess = function (message) {
+    $("#guess").append("<tr><td>" + JSON.parse(message.body).guess + "</td></tr>");
+
+}
+
+var setRoom = function (room) {
+    roomId = JSON.parse(room.body).roomId;
+    stompClient.subscribe('/room/' + roomId, showGuess);
 }
 
 //Main thing to add all the event listeners
@@ -177,5 +205,9 @@ $(function () {
 
     $( "#connect" ).click(function() { connect(); });
     $( "#disconnect" ).click(function() { disconnect(); });
-    $( "#send" ).click(function() { sendName(); });
+    $( "#send" ).click(function() {
+        sendName();
+        printRoom();
+        sendGuess();
+    });
 });
