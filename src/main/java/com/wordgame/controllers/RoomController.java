@@ -24,6 +24,4 @@ public class RoomController {
         System.out.println("Room Id: " + uuid.toString());
         return new Room(uuid.toString());
     }
-
-    
 }
