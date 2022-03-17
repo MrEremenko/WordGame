@@ -2,6 +2,7 @@ var stompClient = null;
 var playerAmount = 2;
 var captchaSolved = false;
 var captchaToken = '';
+var roomId = '';
 
 
 //This function creates the area where you'll see all the players
@@ -47,16 +48,9 @@ function connect() {
     }, function (frame) {
         setConnected(true);
         console.log('Connected: ' + frame);
-        stompClient.subscribe('/topic/greetings', function (greeting) {
-//            showGreeting(JSON.parse(greeting.body).content);
-            console.log("Hello I'm in.");
-            console.log(JSON.parse(greeting.body).content);
-        });
-        // This should be how a response is displayed in HTML
-        stompClient.subscribe('/player/guess', function (guess) {
-            showGuess(JSON.parse(guess.body).guess);
-        });
+        stompClient.subscribe('/app/roomId', setRoom);
     });
+
 }
 
 function disconnect() {
@@ -70,7 +64,7 @@ function disconnect() {
 function sendGuess() {
     console.log("guess submitted");
     console.log(JSON.stringify({'userId': $("#userId").val(), 'guess': $("#userGuess").val()}));
-    stompClient.send("/app/game", {},
+    stompClient.send("/app/game/" + roomId, {},
      JSON.stringify({'userId': $("#userId").val(), 'guess': $("#userGuess").val()}))
 }
 
@@ -78,12 +72,26 @@ function sendName() {
     stompClient.send("/app/hello", {}, JSON.stringify({'name': $("#name").val()}));
 }
 
+function getRoom() {
+    stompClient.send("/app/connectRoom", {}, "Test");
+}
+
 function showGreeting(message) {
     $("#greetings").append("<tr><td>" + message + "</td></tr>");
 }
 
-function showGuess(message) {
-    $("#guess").append("<tr><td>" + message + "</td></tr>");
+function printRoom() {
+    console.log("RoomId: " + roomId);
+}
+
+var showGuess = function (message) {
+    $("#guess").append("<tr><td>" + JSON.parse(message.body).guess + "</td></tr>");
+
+}
+
+var setRoom = function (room) {
+    roomId = JSON.parse(room.body).roomId;
+    stompClient.subscribe('/room/' + roomId, showGuess);
 }
 
 //Main thing to add all the event listeners
@@ -102,6 +110,7 @@ $(function () {
     $("#go-button").click((e) => {
         connect()
         createPlayArea();
+
     });
 
     //Listen to the change of the hCaptcha, and update when it is changed
@@ -129,6 +138,9 @@ $(function () {
 
     $( "#connect" ).click(function() { connect(); });
     $( "#disconnect" ).click(function() { disconnect(); });
-    $( "#send" ).click(function() { sendName(); });
-    $( "#submitGuess" ).click(function() { sendGuess(); });
+    $( "#send" ).click(function() {
+        sendName();
+        printRoom();
+        sendGuess();
+    });
 });

@@ -49,6 +49,7 @@ public class RmeSessionChannelInterceptor implements ChannelInterceptor {
         return message;
     }
 
+
     private String getToken(MultiValueMap<String, String> multiValueMap) {
         String token = null;
         for (Map.Entry<String, List<String>> head : multiValueMap.entrySet()) {
