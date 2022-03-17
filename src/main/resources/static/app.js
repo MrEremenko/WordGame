@@ -93,16 +93,16 @@ function setConnected(connected) {
 }
 
 function connect() {
-    var socket = new SockJS('/gs-guide-websocket');
+    var socket = new SockJS('/connect');
     stompClient = Stomp.over(socket);
     stompClient.connect({
         token: captchaToken
     }, function (frame) {
         setConnected(true);
         console.log('Connected: ' + frame);
-        stompClient.subscribe('/topic/greetings', function (greeting) {
-            showGreeting(JSON.parse(greeting.body).content);
-        });
+//        stompClient.subscribe('/topic/greetings', function (greeting) {
+//            showGreeting(JSON.parse(greeting.body).content);
+//        });
     });
 }
 
@@ -145,23 +145,31 @@ $(function () {
         }
     });
 
-    //Listen to the change of the hCaptcha, and update when it is changed
-    var foo = document.getElementById("captcha").firstChild;
-    console.log(foo);
-    var observer = new MutationObserver(function(mutations) {
-      captchaReponse = document.getElementById("captcha").firstChild.getAttribute("data-hcaptcha-response");
-      if(captchaReponse.trim().length > 0) {
-        console.log("new captcha: " + captchaReponse);
-        captchaToken = captchaReponse;
-        captchaSolved = true;
-        $('#go-button').prop("disabled", false);
-      }
-    });
+//    $("#banner-area").click((e) => {
+//    console.log("WHATTTTT!!!???");
+       //Listen to the change of the hCaptcha, and update when it is changed
+       var foo = document.getElementById("captcha").firstChild;
+       console.log(foo);
+       var observer = new MutationObserver(function(mutations) {
+           if(document.getElementById("captcha")) {
+               captchaReponse = document.getElementById("captcha").firstChild.getAttribute("data-hcaptcha-response");
+               if(captchaReponse.trim().length > 0) {
+                   console.log("new captcha: " + captchaReponse);
+                   captchaToken = captchaReponse;
+                   captchaSolved = true;
+                   $('#go-button').prop("disabled", false);
+               }
+           }
+       });
 
-    observer.observe(foo, {
-      attributes: true,
-      attributeFilter: ['data-hcaptcha-response']
-    });
+       observer.observe(foo, {
+         attributes: true,
+         attributeFilter: ['data-hcaptcha-response']
+       });
+
+//    });
+
+
 
     $("form").on('submit', function (e) {
         e.preventDefault();
