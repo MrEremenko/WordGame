@@ -4,40 +4,30 @@ var captchaSolved = false;
 var captchaToken = '';
 var choosingRoom = true;
 var roomId = '';
-var userId = 1234
-var nickname = "Bofa"
 
+ // Checks if user is in local storage
+if(window.localStorage.getItem('user') != null){
+    var user = JSON.parse(window.localStorage.getItem('user'));
+    var userId = user.userId
+    var nickname = user.nickname
+    console.log("User in local storage")
+    console.log(user);
+   }else{
+    console.log("user not found")
+}
 
-    if(window.localStorage.getItem('user') == null){
-        console.log("user not found, creating user")
-        storeUser(userId, nickname)
-        var user = JSON.parse(window.localStorage.getItem('user'));
-        var userId = user.userId
-        var nickname = user.nickname
-        console.log(userId);
-        console.log(nickname);
-    }else{
-        console.log("user exists, getting user")
-        var user = JSON.parse(window.localStorage.getItem('user'));
-        var userId = user.userId
-        var nickname = user.nickname
-        console.log(userId);
-        console.log(nickname);
-    }
-
-
-function storeUser(){ //stores items in the localStorage
+ // Stores user in the local storage
+function storeUser(){
+    var userId =  $("#userId").val();
+    var nickname =  $("#nickname").val();
     const user = {
         userId: userId,
         nickname: nickname,
     }
     window.localStorage.setItem('user',JSON.stringify(user));
+    console.log("New User in local storage")
+    console.log(user);
 }
-
-
-
-
-
 
 //This function creates the area where you'll see all the players
 function createPlayArea() {
@@ -152,9 +142,9 @@ function disconnect() {
 
 function sendGuess() {
     console.log("guess submitted");
-    console.log(JSON.stringify({'userId': $("#userId").val(), 'guess': $("#userGuess").val()}));
+    console.log(JSON.stringify({'guess': $("#userGuess").val()}));
     stompClient.send("/app/game/" + roomId, {},
-     JSON.stringify({'userId': $("#userId").val(), 'guess': $("#userGuess").val()}))
+     JSON.stringify({'guess': $("#userGuess").val()}))
 }
 
 function sendName() {
@@ -243,4 +233,5 @@ $(function () {
         printRoom();
         sendGuess();
     });
+    $( "#submitUser" ).click(function() { storeUser(); });
 });
