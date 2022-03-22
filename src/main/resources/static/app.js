@@ -148,6 +148,7 @@ var showGuess = function (message) {
 var setRoom = function (room) {
     roomId = JSON.parse(room.body).roomId;
     stompClient.subscribe('/room/' + roomId, showGuess);
+
 }
 
 //Main thing to add all the event listeners
