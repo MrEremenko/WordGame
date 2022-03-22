@@ -4,6 +4,39 @@ var captchaSolved = false;
 var captchaToken = '';
 var choosingRoom = true;
 var roomId = '';
+var userId = 1234
+var nickname = "Bofa"
+
+
+    if(window.localStorage.getItem('user') == null){
+        console.log("user not found, creating user")
+        storeUser(userId, nickname)
+        var user = JSON.parse(window.localStorage.getItem('user'));
+        var userId = user.userId
+        var nickname = user.nickname
+        console.log(userId);
+        console.log(nickname);
+    }else{
+        console.log("user exists, getting user")
+        var user = JSON.parse(window.localStorage.getItem('user'));
+        var userId = user.userId
+        var nickname = user.nickname
+        console.log(userId);
+        console.log(nickname);
+    }
+
+
+function storeUser(){ //stores items in the localStorage
+    const user = {
+        userId: userId,
+        nickname: nickname,
+    }
+    window.localStorage.setItem('user',JSON.stringify(user));
+}
+
+
+
+
 
 
 //This function creates the area where you'll see all the players
