@@ -10,7 +10,7 @@ function connect() {
 //        stompClient.subscribe('/topic/greetings', function (greeting) {
 //            showGreeting(JSON.parse(greeting.body).content);
 //        });
-        updateRoom(); //in socket.js
+        updateRoom();
     });
 
 }

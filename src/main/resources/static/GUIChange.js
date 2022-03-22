@@ -2,7 +2,7 @@
 function createPlayArea() {
     var name = document.createElement("div");
     name.classList.add("col");
-    name.innerText = $("#name").innerText;
+    name.innerText = $("#name").val();
     $("#playerNames").append(name);
 
     for(var i = 0; i < playerAmount - 1; i++) {
