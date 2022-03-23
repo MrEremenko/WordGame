@@ -1,6 +1,5 @@
 package com.wordgame.services;
 
-import com.wordgame.dto.Player;
 import com.wordgame.dto.Room;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.MessageHeaders;
