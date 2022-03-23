@@ -32,7 +32,6 @@ public class RoomController {
     @SubscribeMapping("/getRoom/{limit}")
     public Room getRoom(@DestinationVariable int limit) {
         return service.isValidPlayerAmount(limit) ? service.findRoom(limit) : null;
-    }
 
     @SubscribeMapping("/room/{roomId}")
     public Room joinRoom(@DestinationVariable String roomId, MessageHeaders headers) {
