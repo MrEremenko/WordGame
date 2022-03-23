@@ -1,39 +1,45 @@
 package com.wordgame.controllers;
 
+import com.wordgame.dto.Player;
 import com.wordgame.dto.Room;
+import com.wordgame.services.RoomService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.annotation.SubscribeMapping;
+import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.MultiValueMap;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Controller
 public class RoomController {
 
+    @Autowired
+    private SimpMessagingTemplate template;
+
+    @Autowired
+    private RoomService service;
+
+    @SubscribeMapping("/getRoom/{limit}")
+    public Room getRoom(@DestinationVariable int limit) {
+        return service.isValidPlayerAmount(limit) ? service.findRoom(limit) : null;
+
     @SubscribeMapping("/room/{roomId}")
-    public void joinRoom(@DestinationVariable String roomId) {
-        //if room id doesn't exist, close connection (if possible) or don't do anything
+    public Room joinRoom(@DestinationVariable String roomId, MessageHeaders headers) {
+        String username = service.getHeaderValue(headers, "username");
+        String userId = service.getHeaderValue(headers, "id");
+        Room currentRoom = service.addPlayerToRoom(username, userId, roomId);
 
-        //user joins room that they got from the server
-        //send to everyone that this user just joined
-        //  along with that, send if the game has started
-        //  close the room if the room is full
+        return currentRoom;
     }
 
-    @SubscribeMapping("/roomId")
-    public Room connectRoom() {
-//        TODO: if there is a room available return this room;
-//        else return new room
-        System.out.println("In connectRoom()");
-        //if subscriber list if full, start game
-        return createRoom();
-    }
-
-    private Room createRoom() {
-        UUID uuid = UUID.randomUUID();
-        System.out.println("Room Id: " + uuid.toString());
-        return new Room(uuid.toString());
-    }
 }

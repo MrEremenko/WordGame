@@ -34,6 +34,6 @@ public class GameController {
         System.out.println("User Guess " + guess.getGuess());
         Thread.sleep(1000); // simulated delay
         System.out.println("Destination: " + "/room/" + room);
-        this.template.convertAndSend("/room/" + room, guess);
+        this.template.convertAndSend("/app/room/" + room, guess);
     }
 }

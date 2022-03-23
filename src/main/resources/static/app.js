@@ -104,7 +104,7 @@ function connect() {
 //        stompClient.subscribe('/topic/greetings', function (greeting) {
 //            showGreeting(JSON.parse(greeting.body).content);
 //        });
-        stompClient.subscribe('/app/roomId', setRoom);
+        stompClient.subscribe('/app/getRoom/' + playerAmount, setRoom);
     });
 
 }
@@ -145,10 +145,14 @@ var showGuess = function (message) {
 
 }
 
-var setRoom = function (room) {
-    roomId = JSON.parse(room.body).roomId;
-    stompClient.subscribe('/room/' + roomId, showGuess);
+var doSomethingWithRoom = function (room) {
+    console.log(room);
+}
 
+var setRoom = function (room) {
+    console.log("I'm in setRoom().");
+    roomId = JSON.parse(room.body).roomId;
+    stompClient.subscribe('/app/room/' + roomId, doSomethingWithRoom, {'username' : 'testUsername', 'id' : 'testId'});
 }
 
 //Main thing to add all the event listeners
