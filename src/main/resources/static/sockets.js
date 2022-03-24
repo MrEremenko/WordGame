@@ -54,9 +54,11 @@ var setRoom = function (room) {
 
 function updateRoom() {
     if(choosingRoom) {
-        stompClient.unsubscribe("/room/" + roomId);
+        stompClient.unsubscribe("app/room/" + roomId);
+        stompClient.unsubscribe('/app/getRoom/' + playerAmount);
     } else {
-        stompClient.subscribe('/app/getRoom' + playerAmount, setRoom);
+        console.log("subbing to getRoom")
+        stompClient.subscribe('/app/getRoom/' + playerAmount, setRoom);
     }
 }
 
