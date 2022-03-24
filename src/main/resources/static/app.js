@@ -5,28 +5,31 @@ var captchaToken = '';
 var choosingRoom = true;
 var roomId = '';
 
- // Checks if user is in local storage
+// create user object
+var user = {
+userId: "",
+nickname: ""
+}
+
+// check if user exists
 if(window.localStorage.getItem('user') != null){
-    var user = JSON.parse(window.localStorage.getItem('user'));
-    var userId = user.userId
-    var nickname = user.nickname
-    console.log("User in local storage")
-    console.log(user);
-   }else{
-    console.log("user not found")
+    var storedUser = JSON.parse(window.localStorage.getItem('user'));
+    console.log("stored user")
+    user.userId = storedUser.userId
+    user.nickname = storedUser.nickname
+    console.log("user found")
+    console.log(user)
+}else{
+    user.userId = Math.random().toString(36).substr(2, 9)
+    storeUser();
+    console.log(user)
 }
 
  // Stores user in the local storage
 function storeUser(){
-    var userId =  $("#userId").val();
-    var nickname =  $("#nickname").val();
-    const user = {
-        userId: userId,
-        nickname: nickname,
-    }
+    user.nickname =  $("#nickname").val();
     window.localStorage.setItem('user',JSON.stringify(user));
-    console.log("New User in local storage")
-    console.log(user);
+    console.log("user saved")
 }
 
 //This function creates the area where you'll see all the players
@@ -191,6 +194,7 @@ $(function () {
     $("#go-button").click((e) => {
         choosingRoom = !choosingRoom;
         updateView();
+        storeUser();
         if(!stompClient) {
             connect()
         }
