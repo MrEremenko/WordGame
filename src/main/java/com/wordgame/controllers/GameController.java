@@ -13,16 +13,6 @@ public class GameController {
     @Autowired
     private SimpMessagingTemplate template;
 
-    @MessageMapping("/join/{room}")
-    public void start(@DestinationVariable String room, PlayerGuess guess) throws Exception {
-        System.out.println("Hit /player/guess endpoint");
-        System.out.println("user Id " + guess.getUserId());
-        System.out.println("User Guess " + guess.getGuess());
-        Thread.sleep(1000); // simulated delay
-        System.out.println("Destination: " + "/room/" + room);
-        this.template.convertAndSend("/room/" + room, guess);
-    }
-
     @MessageMapping("/guess/{room}")
     public void guess(@DestinationVariable String room, PlayerGuess guess) throws Exception {
         System.out.println("Hit /player/guess endpoint");

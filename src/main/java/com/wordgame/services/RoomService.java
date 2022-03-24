@@ -63,10 +63,7 @@ public class RoomService {
         Action action = null;
         if(currentRoom != null) {
             currentRoom.addPlayer(username);
-
-            action = currentRoom.isFull() ?
-                    sendStartGame(roomId) :
-                    sendWaitingGame(roomId);
+            action = currentRoom.isFull() ? sendStartGame(roomId) : sendWaitingGame(roomId);
         }
 
         return action;

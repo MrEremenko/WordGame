@@ -30,10 +30,6 @@ function sendGuess() {
      JSON.stringify({'userId': $("#userId").val(), 'guess': $("#userGuess").val()}))
 }
 
-function sendName() {
-    stompClient.send("/app/hello", {}, JSON.stringify({'name': $("#name").val()}));
-}
-
 function getRoom() {
     stompClient.send("/app/getRoom", {}, "Test");
 }
@@ -43,6 +39,7 @@ function showGuess(message) {
 }
 
 var doSomethingWithRoom = function (room) {
+    console.log("Ok, hit doSOmething");
     console.log(room);
 }
 
@@ -68,7 +65,6 @@ function addPlayer(player) {
 
 function sendGuess() {
     console.log("guess submitted");
-    console.log(JSON.stringify({'userId': $("#userId").val(), 'guess': $("#userGuess").val()}));
-    stompClient.send("/app/game/" + roomId, {},
-    JSON.stringify({'userId': $("#userId").val(), 'guess': $("#userGuess").val()}))
+    console.log(JSON.stringify({'userId': "testId", 'guess': $("#userGuess").val()}));
+    stompClient.send("/app/guess/" + roomId, {}, JSON.stringify({'userId': "testId", 'guess': $("#userGuess").val()}))
 }
