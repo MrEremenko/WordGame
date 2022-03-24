@@ -1,5 +1,7 @@
 package com.wordgame.services;
 
+import com.wordgame.dto.Action;
+import com.wordgame.dto.Command;
 import com.wordgame.dto.Room;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.MessageHeaders;
@@ -27,10 +29,11 @@ public class RoomService {
         this.waitingRooms = waitingRooms;
     }
 
-    private void toActive(String roomId) {
+    private Room toActive(String roomId) {
         Room activeRoom = waitingRooms.remove(roomId);
         if (activeRoom != null)
             activeRooms.put(roomId, activeRoom);
+        return activeRoom;
     }
 
     private Room createRoom(int limit) {
@@ -41,19 +44,32 @@ public class RoomService {
         return room;
     }
 
-    public Room addPlayerToRoom(String username, String userId, String roomId) {
-        Room currentRoom = isValidUsername(username) ? getWaitingRoom(roomId) : null;
+    private Action sendStartGame(String roomId) {
+        Room room = toActive(roomId);
+        Action action = new Action(room, Command.START);
+        this.template.convertAndSend("/app/room/" + roomId, action);
+        return action;
+    }
 
+    private Action sendWaitingGame(String roomId) {
+        Room room = waitingRooms.get(roomId);
+        Action action = new Action(room, Command.WAITING);
+        this.template.convertAndSend("/app/room/" + roomId, action);
+        return action;
+    }
+
+    public Action addPlayerToRoom(String username, String userId, String roomId) {
+        Room currentRoom = isValidUsername(username) ? getWaitingRoom(roomId) : null;
+        Action action = null;
         if(currentRoom != null) {
             currentRoom.addPlayer(username);
 
-            if(currentRoom.isFull()) {
-                toActive(roomId);
-                this.template.convertAndSend("/app/room/" + roomId, "Start The Game");
-            }
+            action = currentRoom.isFull() ?
+                    sendStartGame(roomId) :
+                    sendWaitingGame(roomId);
         }
 
-        return currentRoom;
+        return action;
     }
 
     public Room getWaitingRoom(String roomId) {
