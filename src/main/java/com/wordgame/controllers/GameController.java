@@ -1,15 +1,11 @@
 package com.wordgame.controllers;
 
-import com.wordgame.dto.Greeting;
-import com.wordgame.dto.HelloMessage;
 import com.wordgame.dto.PlayerGuess;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.util.HtmlUtils;
 
 @Controller
 public class GameController {
@@ -34,6 +30,6 @@ public class GameController {
         System.out.println("User Guess " + guess.getGuess());
         Thread.sleep(1000); // simulated delay
         System.out.println("Destination: " + "/room/" + room);
-        this.template.convertAndSend("/room/" + room, guess);
+        this.template.convertAndSend("/app/room/" + room, guess);
     }
 }

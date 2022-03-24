@@ -35,24 +35,28 @@ function sendName() {
 }
 
 function getRoom() {
-    stompClient.send("/app/connectRoom", {}, "Test");
+    stompClient.send("/app/getRoom", {}, "Test");
 }
 
 function showGuess(message) {
     $("#guess").append("<tr><td>" + JSON.parse(message.body).guess + "</td></tr>");
-
 }
 
-function setRoom(room) {
+var doSomethingWithRoom = function (room) {
+    console.log(room);
+}
+
+var setRoom = function (room) {
+    console.log("I'm in setRoom().");
     roomId = JSON.parse(room.body).roomId;
-    stompClient.subscribe('/room/' + roomId, showGuess);
+    stompClient.subscribe('/app/room/' + roomId, doSomethingWithRoom, {'username' : 'testUsername', 'id' : 'testId'});
 }
 
 function updateRoom() {
     if(choosingRoom) {
         stompClient.unsubscribe("/room/" + roomId);
     } else {
-        stompClient.subscribe('/app/roomId', setRoom);
+        stompClient.subscribe('/app/getRoom' + playerAmount, setRoom);
     }
 }
 
@@ -60,6 +64,9 @@ function addPlayer(player) {
     playersAndGuesses.push(player);
 }
 
-function makeGuess(word) {
-
+function sendGuess() {
+    console.log("guess submitted");
+    console.log(JSON.stringify({'userId': $("#userId").val(), 'guess': $("#userGuess").val()}));
+    stompClient.send("/app/game/" + roomId, {},
+    JSON.stringify({'userId': $("#userId").val(), 'guess': $("#userGuess").val()}))
 }

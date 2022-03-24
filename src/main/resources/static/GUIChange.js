@@ -24,14 +24,14 @@ function createPlayArea() {
     }
 
     //now replace the spinners with any available players...
-    for(let i = 0; i < players.length; i++) {
-        //remove jspinner
-        console.log($("#playerNames").children().eq(i).children().remove();
-        //add a name
-        let name = document.createElement("div");
-        name.innerText = players[i].username;
-        $("#playerNames").children()[i].append(name);
-    }
+//    for(let i = 0; i < players.length; i++) {
+//        //remove jspinner
+//        console.log($("#playerNames").children().eq(i).children().remove();
+//        //add a name
+//        let name = document.createElement("div");
+//        name.innerText = players[i].username;
+//        $("#playerNames").children()[i].append(name);
+//    }
 }
 
 function removePlayArea() {

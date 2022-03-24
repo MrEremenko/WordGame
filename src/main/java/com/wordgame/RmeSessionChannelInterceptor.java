@@ -1,9 +1,6 @@
 package com.wordgame;
 
 import org.json.JSONObject;
-import org.springframework.beans.InvalidPropertyException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
@@ -11,7 +8,6 @@ import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.simp.stomp.StompCommand;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
-import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.util.MultiValueMap;
 
 import java.io.IOException;
@@ -21,12 +17,9 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
-import java.security.InvalidKeyException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.MissingResourceException;
-import java.util.concurrent.ExecutionException;
 
 public class RmeSessionChannelInterceptor implements ChannelInterceptor {
 
