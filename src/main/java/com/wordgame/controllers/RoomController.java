@@ -1,5 +1,6 @@
 package com.wordgame.controllers;
 
+import com.wordgame.dto.Action;
 import com.wordgame.dto.Room;
 import com.wordgame.services.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,12 +25,11 @@ public class RoomController {
     }
 
     @SubscribeMapping("/room/{roomId}")
-    public Room joinRoom(@DestinationVariable String roomId, MessageHeaders headers) {
+    public Action joinRoom(@DestinationVariable String roomId, MessageHeaders headers) {
         String username = service.getHeaderValue(headers, "username");
         String userId = service.getHeaderValue(headers, "id");
-        Room currentRoom = service.addPlayerToRoom(username, userId, roomId);
 
-        return currentRoom;
+        return service.addPlayerToRoom(username, userId, roomId);
     }
 
 }
