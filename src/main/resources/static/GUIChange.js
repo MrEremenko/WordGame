@@ -1,11 +1,11 @@
 //This function creates the area where you'll see all the players
 function createPlayArea() {
-    var name = document.createElement("div");
-    name.classList.add("col");
-    name.innerText = $("#name").val();
-    $("#playerNames").append(name);
+//    var name = document.createElement("div");
+//    name.classList.add("col");
+//    name.innerText = $("#name").val();
+//    $("#playerNames").append(name);
 
-    for(var i = 0; i < playerAmount - 1; i++) {
+    for(var i = 0; i < playerAmount; i++) {
         var colForSpinner = document.createElement("div");
         colForSpinner.classList.add("col");
         colForSpinner.classList.add("d-flex");
@@ -24,8 +24,13 @@ function createPlayArea() {
     }
 
     //now replace the spinners with any available players...
-    for(var p of players) {
-
+    for(let i = 0; i < players.length; i++) {
+        //remove jspinner
+        console.log($("#playerNames").children().eq(i).children().remove();
+        //add a name
+        let name = document.createElement("div");
+        name.innerText = players[i].username;
+        $("#playerNames").children()[i].append(name);
     }
 }
 

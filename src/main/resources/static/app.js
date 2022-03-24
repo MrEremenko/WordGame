@@ -4,7 +4,7 @@ var captchaSolved = false;
 var captchaToken = '';
 var choosingRoom = true;
 var roomId = '';
-var players = []; //contains players and their guesses
+var players = [{ username: "nerdromere" }, { username: "alexi" }]; //contains players and their guesses
 //the format is { id: number, username: string, guesses: [string] }
 
 
