@@ -1,27 +1,35 @@
 package com.wordgame.controllers;
 
+import com.wordgame.dto.Action;
 import com.wordgame.dto.Room;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.SendTo;
+import com.wordgame.services.RoomService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.MessageHeaders;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.stereotype.Controller;
-
-import java.util.UUID;
 
 @Controller
 public class RoomController {
 
-    @SubscribeMapping("/roomId")
-    public Room connectRoom() {
-//        TODO: if there is a room available return this room;
-//        else return new room
-        System.out.println("In connectRoom()");
-        return createRoom();
+    @Autowired
+    private SimpMessagingTemplate template;
+
+    @Autowired
+    private RoomService service;
+
+    @SubscribeMapping("/getRoom/{limit}")
+    public Room getRoom(@DestinationVariable int limit) {
+        return service.isValidPlayerAmount(limit) ? service.findRoom(limit) : null;
     }
 
-    private Room createRoom() {
-        UUID uuid = UUID.randomUUID();
-        System.out.println("Room Id: " + uuid.toString());
-        return new Room(uuid.toString());
+    @SubscribeMapping("/room/{roomId}")
+    public Action joinRoom(@DestinationVariable String roomId, MessageHeaders headers) {
+        String username = service.getHeaderValue(headers, "username");
+        String userId = service.getHeaderValue(headers, "id");
+
+        return service.addPlayerToRoom(username, userId, roomId);
     }
+
 }
