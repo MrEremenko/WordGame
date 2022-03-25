@@ -29,44 +29,19 @@ public class RoomService {
         this.waitingRooms = waitingRooms;
     }
 
-    private Room toActive(String roomId) {
-        Room activeRoom = waitingRooms.remove(roomId);
-        if (activeRoom != null)
-            activeRooms.put(roomId, activeRoom);
-        return activeRoom;
-    }
-
-    private Room createRoom(int limit) {
-        String uuid = UUID.randomUUID().toString();
-        Room room = new Room(uuid, limit);
-        System.out.println("Room Id: " + uuid);
-        waitingRooms.put(uuid, room);
-        return room;
-    }
-
-    private Action sendStartGame(String roomId) {
-        Room room = toActive(roomId);
-        Action action = new Action(room, Command.START);
-        this.template.convertAndSend("/app/room/" + roomId, action);
-        return action;
-    }
-
-    private Action sendWaitingGame(String roomId) {
-        Room room = waitingRooms.get(roomId);
-        Action action = new Action(room, Command.WAITING);
-        this.template.convertAndSend("/app/room/" + roomId, action);
-        return action;
-    }
-
     public Action addPlayerToRoom(String username, String userId, String roomId) {
         Room currentRoom = isValidUsername(username) ? getWaitingRoom(roomId) : null;
         Action action = null;
         if(currentRoom != null) {
             currentRoom.addPlayer(username);
-            action = currentRoom.isFull() ? sendStartGame(roomId) : sendWaitingGame(roomId);
+            action = currentRoom.isFull() ? startGame(roomId) : waitingGame(roomId);
         }
 
         return action;
+    }
+
+    public Room getActiveRoom(String roomId) {
+        return activeRooms.get(roomId);
     }
 
     public Room getWaitingRoom(String roomId) {
@@ -99,5 +74,30 @@ public class RoomService {
                 .orElse(createRoom(limit));
     }
 
+    private Room toActive(String roomId) {
+        Room activeRoom = waitingRooms.remove(roomId);
+        if (activeRoom != null)
+            activeRooms.put(roomId, activeRoom);
+        return activeRoom;
+    }
 
+    private Room createRoom(int limit) {
+        String uuid = UUID.randomUUID().toString();
+        Room room = new Room(uuid, limit);
+        System.out.println("Room Id: " + uuid);
+        waitingRooms.put(uuid, room);
+        return room;
+    }
+
+    private Action startGame(String roomId) {
+        Room room = toActive(roomId);
+        Action action = new Action(Command.START, room);
+        return action;
+    }
+
+    private Action waitingGame(String roomId) {
+        Room room = waitingRooms.get(roomId);
+        Action action = new Action(Command.WAITING, room);
+        return action;
+    }
 }

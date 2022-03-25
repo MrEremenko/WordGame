@@ -15,8 +15,6 @@ function connect() {
 
 }
 
-
-
 function disconnect() {
     if (stompClient !== null) {
         stompClient.disconnect();
@@ -41,6 +39,21 @@ function showGuess(message) {
 var doSomethingWithRoom = function (room) {
     console.log("Ok, hit doSOmething");
     console.log(room);
+
+//        START("START"),
+//        READY("READY"),
+//        GUESS("GUESS"),
+//        NEWROUND("NEW ROUND"),
+//        WAITING("WAITING"),
+//        ENDGAME("END GAME");
+// These are the commands so far. They have corresponding objects that are returned with them.
+// START returns with Room object
+// READY returns with Player object who is ready
+// GUESS returns with PlayerGuess object who sent te guess
+// WAITING returns with Room object
+// NEWROUND and ENDGAME are not implemented yet
+
+
 }
 
 var setRoom = function (room) {
