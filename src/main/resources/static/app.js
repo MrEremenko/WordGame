@@ -14,7 +14,6 @@ nickname: ""
 // check if user exists
 if(window.localStorage.getItem('user') != null){
     var storedUser = JSON.parse(window.localStorage.getItem('user'));
-    console.log("stored user")
     user.userId = storedUser.userId
     user.nickname = storedUser.nickname
     console.log("user found")
@@ -27,7 +26,7 @@ if(window.localStorage.getItem('user') != null){
 
  // Stores user in the local storage
 function storeUser(){
-    user.nickname =  $("#nickname").val();
+    user.nickname =  $("#name").val();
     window.localStorage.setItem('user',JSON.stringify(user));
     console.log("user saved")
 }
@@ -124,5 +123,8 @@ $(function () {
         printRoom();
         sendGuess();
     });
-    $( "#submitUser" ).click(function() { storeUser(); });
+
+    // Pre-fills Nickname field
+    if(user.nickname)document.getElementById("name").setAttribute('value', user.nickname)
+
 });
