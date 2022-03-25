@@ -4,8 +4,46 @@ var captchaSolved = false;
 var captchaToken = '';
 var choosingRoom = true;
 var roomId = '';
+
+// create user object
+var user = {
+userId: "",
+nickname: ""
+}
+
+// check if user exists
+if(window.localStorage.getItem('user') != null){
+    var storedUser = JSON.parse(window.localStorage.getItem('user'));
+    user.userId = storedUser.userId
+    user.nickname = storedUser.nickname
+    console.log("user found")
+    console.log(user)
+}else{
+    user.userId = Math.random().toString(36).substr(2, 9)
+    storeUser();
+    console.log(user)
+}
+
+ // Stores user in the local storage
+function storeUser(){
+    var sanitizedTemp = sanitizeString($("#name").val())
+    if(sanitizedTemp.length > 20){
+    alert("The name you entered is too long")
+    }else{
+    user.nickname =  sanitizedTemp
+    window.localStorage.setItem('user',JSON.stringify(user));
+    console.log("user saved")
+    }
+}
+
+// removes special characters from input string
+function sanitizeString(input){
+    return input.replace(/[^a-z0-9áéíóúñü \.,_-]/gim,"").trim()
+}
+
 var players = [{ username: "nerdromere" }, { username: "alexi" }]; //contains players and their guesses
 //the format is { id: number, username: string, guesses: [string] }
+
 
 //In order from top to bottom of HTML File
 function setConnected(connected) {
@@ -28,6 +66,7 @@ function disconnect() {
     console.log("Disconnected");
 }
 
+
 function printRoom() {
     console.log("RoomId: " + roomId);
 }
@@ -49,7 +88,8 @@ $(function () {
     //Once the Go button is clicked
     $("#go-button").click((e) => {
         choosingRoom = !choosingRoom;
-        updateView(); //in GUIChanges.js
+        updateView();
+        storeUser();
         if(!stompClient) {
             connect()
         } else {
@@ -93,4 +133,8 @@ $(function () {
         printRoom();
         sendGuess();
     });
+
+    // Pre-fills Nickname field
+    if(user.nickname)document.getElementById("name").setAttribute('value', user.nickname)
+
 });
