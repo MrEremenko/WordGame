@@ -2,6 +2,8 @@ package com.wordgame.dto;
 
 public enum Command {
     START("START"),
+    READY("READY"),
+    GUESS("GUESS"),
     NEWROUND("NEW ROUND"),
     WAITING("WAITING"),
     ENDGAME("END GAME");

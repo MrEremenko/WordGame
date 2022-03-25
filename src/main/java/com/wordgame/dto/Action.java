@@ -6,11 +6,11 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Action {
-    Room room;
+    Object object;
     Command command;
 
-    public Action(Room room, Command command) {
-        this.room = room;
+    public Action(Command command, Object object) {
+        this.object = object;
         this.command = command;
     }
 }
