@@ -26,9 +26,19 @@ if(window.localStorage.getItem('user') != null){
 
  // Stores user in the local storage
 function storeUser(){
-    user.nickname =  $("#name").val();
+    var sanitizedTemp = sanitizeString($("#name").val())
+    if(sanitizedTemp.length > 20){
+    alert("The name you entered is too long")
+    }else{
+    user.nickname =  sanitizedTemp
     window.localStorage.setItem('user',JSON.stringify(user));
     console.log("user saved")
+    }
+}
+
+// removes special characters from input string
+function sanitizeString(input){
+    return input.replace(/[^a-z0-9áéíóúñü \.,_-]/gim,"").trim()
 }
 
 var players = [{ username: "nerdromere" }, { username: "alexi" }]; //contains players and their guesses
