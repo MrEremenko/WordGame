@@ -28,15 +28,16 @@ public class Room {
         players = new HashMap<>();
     }
 
-    public boolean addPlayer(String username) {
+    public Player addPlayer(String username) {
+        Player player = null;
         if(!this.isFull) {
-            Player player = new Player(String.valueOf(count), username);
+            player = new Player(String.valueOf(count), username, roomId);
             count++;
-            players.put(player.id, player);
+            players.put(player.getPlayerId(), player);
             this.isFull = players.size() >= this.limit;
         }
 
-        return this.isFull;
+        return player;
     }
 
     public Player setPlayerReady(String playerId) {
