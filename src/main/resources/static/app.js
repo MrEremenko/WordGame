@@ -26,13 +26,15 @@ if(window.localStorage.getItem('user') != null){
 
  // Stores user in the local storage
 function storeUser(){
-    var sanitizedTemp = sanitizeString($("#name").val())
-    if(sanitizedTemp.length > 20){
-    alert("The name you entered is too long")
-    }else{
-    user.nickname =  sanitizedTemp
-    window.localStorage.setItem('user',JSON.stringify(user));
-    console.log("user saved")
+    if($("#name").val()){
+       var sanitizedTemp = sanitizeString($("#name").val())
+        if(sanitizedTemp.length > 20){
+        alert("The name you entered is too long")
+        }else{
+        user.nickname =  input
+        window.localStorage.setItem('user',JSON.stringify(user));
+        console.log("user saved")
+        }
     }
 }
 

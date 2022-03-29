@@ -14,49 +14,8 @@
     <script src="/app.js"></script>
 </head>
 <body>
-<noscript><h2 style="color: #ff0000">Seems your browser doesn't support Javascript! Websocket relies on Javascript being
-    enabled. Please enable
-    Javascript and reload this page!</h2></noscript>
-<div id="main-content" class="container">
-    <div class="pt-2 d-flex justify-content-center gap-2">
-        <div id="player-amount" class="btn-group" role="group" aria-label="Basic radio toggle button group">
-            <input id="2-players-button" type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" checked>
-            <label value="2" class="btn btn-outline-primary" for="btnradio1">2 Players</label>
-
-            <input id="3-players-button" type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off">
-            <label value="3" class="btn btn-outline-primary" for="btnradio2">3 Players</label>
-
-            <input id="4-players-button" type="radio" class="btn-check" name="btnradio" id="btnradio3" autocomplete="off">
-            <label value="4" class="btn btn-outline-primary" for="btnradio3">4 Players</label>
-
-        </div>
-        <button id="go-button" type="button" class="btn btn-success" disabled>Go</button>
-    </div>
-    <div class="d-flex justify-content-center mt-2">
-        <input style="width: 15vw;" type="text" id="name" class="form-control" value="" onkeyup="storeUser()" placeholder="Your name here...">
-    </div>
-    <div id="banner-area" class="pt-2 d-flex justify-content-center gap-2">
-        <!--        <div id="captcha" class="h-captcha" data-sitekey="10000000-ffff-ffff-ffff-000000000001" style="display: none"></div>-->
-        <div id="captcha" class="h-captcha" data-sitekey="7965b0cd-82f8-47da-a7a6-dbd48a47f201"></div>
-        <div id="countdown"></div>
-    </div>
-    <!--  Generate the appropriate amount of colums for each player  -->
-    <div id="play-area" class="container d-flex flex-column justify-content-center w-50">
-        <div id="playerNames" class="row d-flex justify-content-around align-items-center">
-        </div>
-        <div id="playerGuesses" class="container d-flex">
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-6">
-            <form class="form-inline">
-                <div class="form-group">
-                    <input type="text" id="userGuess" class="form-control" placeholder="What is your guess?">
-                </div>
-                <button id="submitGuess" class="btn btn-default" type="submit">Send Guess</button>
-            </form>
-        </div>
-    </div>
-</div>
+<div id="app"></div>
+<script src="/bundle.js"></script>
 </body>
 </html>
+
