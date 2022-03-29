@@ -12,6 +12,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.socket.messaging.SessionConnectEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
 @Controller
@@ -55,7 +56,7 @@ public class RoomController {
     }
 
     @EventListener
-    private void handSessionDisconnect(SessionDisconnectEvent event) {
+    private void handleSessionDisconnect(SessionDisconnectEvent event) {
         String sessionId = event.getSessionId();
         Player player = roomService.getDisconnectedPlayer(sessionId);
         sendMessage(player.getRoomId(), player, Command.DISCONNECT);

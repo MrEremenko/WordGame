@@ -66,10 +66,6 @@ public class RoomService {
     public Player getDisconnectedPlayer(String sessionId) {
         return players.get(sessionId);
     }
-//
-//    public String getSessionId(MessageHeaders headers) {
-//        MultiValueMap<String, String> multiValueMap = headers.get(StompHeaderAccessor.SESSION_ID_HEADER);
-//    }
 
     public boolean isValidUsername(String username) {
         int maxChar = 30;

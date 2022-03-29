@@ -11,6 +11,8 @@ public class HandShakeHandler implements HandshakeInterceptor {
     @Override
     public boolean beforeHandshake(ServerHttpRequest request, ServerHttpResponse response, WebSocketHandler wsHandler, Map<String, Object> attributes) throws Exception {
         attributes.put("test", "We did it baby!!!");
+
+        response.getHeaders();
         return true;
     }
 

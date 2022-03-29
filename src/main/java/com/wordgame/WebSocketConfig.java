@@ -28,8 +28,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         registration.interceptors(rmeSessionChannelInterceptor());
     }
 
-    @Bean
-    public HandShakeHandler handShakeHandler() { return new HandShakeHandler(); }
+//    @Bean
+//    public HandShakeHandler handShakeHandler() { return new HandShakeHandler(); }
 
     @Bean
     public RmeSessionChannelInterceptor rmeSessionChannelInterceptor() {

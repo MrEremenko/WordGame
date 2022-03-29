@@ -28,9 +28,6 @@ public class RmeSessionChannelInterceptor implements ChannelInterceptor {
     @Value("${spring.secret}")
     private String secret;
 
-//    @Autowired
-//    private SimpMessagingTemplate template;
-
     @Override
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
         MessageHeaders headers = message.getHeaders();
