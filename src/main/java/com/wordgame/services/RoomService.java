@@ -2,8 +2,10 @@ package com.wordgame.services;
 
 import com.wordgame.dto.Action;
 import com.wordgame.dto.Command;
+import com.wordgame.dto.Player;
 import com.wordgame.dto.Room;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
@@ -20,20 +22,26 @@ public class RoomService {
     private final Map<String, Room> activeRooms;
     private final Map<String, Room> waitingRooms;
 
+    private final Map<String, Player> players;
+
     @Autowired
     private SimpMessagingTemplate template;
 
     @Autowired
-    private RoomService (HashMap<String, Room> activeRooms, HashMap<String, Room> waitingRooms) {
+    private RoomService (HashMap<String, Room> activeRooms,
+                         HashMap<String, Room> waitingRooms,
+                         HashMap<String, Player> players) {
         this.activeRooms = activeRooms;
         this.waitingRooms = waitingRooms;
+        this.players = players;
     }
 
-    public Action addPlayerToRoom(String username, String userId, String roomId) {
+    public Action addPlayerToRoom(String username, String userId, String roomId, String sessionId) {
         Room currentRoom = isValidUsername(username) ? getWaitingRoom(roomId) : null;
         Action action = null;
         if(currentRoom != null) {
-            currentRoom.addPlayer(username);
+            Player player = currentRoom.addPlayer(username);
+            players.put(sessionId, player);
             action = currentRoom.isFull() ? startGame(roomId) : waitingGame(roomId);
         }
 
@@ -53,6 +61,10 @@ public class RoomService {
         String value = multiValueMap.get(key).get(0);
 
         return value;
+    }
+
+    public Player getDisconnectedPlayer(String sessionId) {
+        return players.get(sessionId);
     }
 
     public boolean isValidUsername(String username) {

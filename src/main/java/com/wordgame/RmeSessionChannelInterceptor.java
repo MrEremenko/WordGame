@@ -1,10 +1,12 @@
 package com.wordgame;
 
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessageHeaders;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.stomp.StompCommand;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
@@ -34,7 +36,7 @@ public class RmeSessionChannelInterceptor implements ChannelInterceptor {
         System.out.println("[Channel Interceptor] Command: " + accessor.getCommand());
 
         MultiValueMap<String, String> multiValueMap = headers.get(StompHeaderAccessor.NATIVE_HEADERS,MultiValueMap.class);
-
+        Map username = accessor.getSessionAttributes();
         if(StompCommand.CONNECT.equals(accessor.getCommand())) {
             message = verifyCaptcha(getToken(multiValueMap)) ? message : null;
         }

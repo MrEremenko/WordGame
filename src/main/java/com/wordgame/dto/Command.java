@@ -6,7 +6,8 @@ public enum Command {
     GUESS("GUESS"),
     NEWROUND("NEW ROUND"),
     WAITING("WAITING"),
-    ENDGAME("END GAME");
+    ENDGAME("END GAME"),
+    DISCONNECT("DISCONNECT");
 
     private final String text;
 
