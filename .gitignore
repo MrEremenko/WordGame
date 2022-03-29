@@ -5,7 +5,7 @@ target/
 !**/src/test/**/target/
 src/main/resources/application.properties
 /src/main/frontend/node_modules/
-/src/main/frontend/yarn.lock/
+/src/main/frontend/yarn.lock
 
 ### STS ###
 .apt_generated
